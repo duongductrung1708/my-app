@@ -10,32 +10,54 @@ function App() {
   const [rows, setRows] = useState([
     {
       page: "1708",
-      description: "Duong Duc Trung",
+      description: "John Doe",
       class: "SE1732",
-      email: "trungyna1708@gmail.com",
+      email: "johndoe@gmail.com",
       phone: "0334230359",
-      status: "Online",
+      status: "Male",
     },
     {
       page: "0608",
-      description: "Duong Hoai Nam",
+      description: "David Smith",
       class: "SE1732",
-      email: "namyna0608@gmail.com",
+      email: "davidsmith@gmail.com",
       phone: "0283728465",     
-      status: "Offline",
+      status: "Male",
     },
     {
       page: "2404",
-      description: "Nguyen Thi Phuong Nghi",
+      description: "Jane Doe",
       class: "SE1732",
-      email: "nghiyna2404@gmail.com",
+      email: "janedoe@gmail.com",
       phone: "0562538664",      
-      status: "Busy",
+      status: "Female",
     },
   ]);
   
   const [rowToEdit, setRowToEdit] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const totalPages = Math.ceil(rows.length / itemsPerPage);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  const itemsToDisplay = rows.slice(startIndex, endIndex);
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   const handleDeleteRow = (targetIndex) => {
     setRows(rows.filter((_, idx) => idx !== targetIndex));
@@ -61,7 +83,7 @@ function App() {
 
   return (
     <div className="App">
-
+    <h1>Students List</h1>
       <div className="search-bar">
       <input className="search-input"
       type="text"
@@ -72,14 +94,30 @@ function App() {
       <button className="search-button">Search</button>
       </div>
 
-      <Table rows={rows.filter((row) => row.description.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      row.page.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      row.class.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      row.email.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      row.phone.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      row.status.toLowerCase().includes(searchQuery.toLowerCase()))} 
+<Table
+  rows={itemsToDisplay.filter((row) =>
+    row.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    row.page.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    row.class.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    row.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    row.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    row.status.toLowerCase().includes(searchQuery.toLowerCase())
+  )}
+  deleteRow={handleDeleteRow}
+  editRow={handleEditRow}
+/>
 
-      deleteRow={handleDeleteRow} editRow={handleEditRow} />
+      <div className="pagination">
+        <button onClick={handlePrevPage} disabled={currentPage === 1}>
+          Previous
+        </button>
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
+        <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+          Next
+        </button>
+      </div>      
       <button onClick={() => setModalOpen(true)} className="btn">
         Create Student
       </button>

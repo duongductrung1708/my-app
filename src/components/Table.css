@@ -48,28 +48,20 @@
     color: white;
 }
 
-.label-Offline {
-    background-color: #777;
-}
-
-.label-Online {
-    background-color: #42a942;
-}
-
-.label-Busy {
+.label-Male {
     background-color: #d9534f;
 }
 
-.label-offline {
-    background-color: #777;
+.label-Female {
+    background-color: #BF41FE;
 }
 
-.label-online {
-    background-color: #42a942;
-}
-
-.label-busy {
+.label-male {
     background-color: #d9534f;
+}
+
+.label-female {
+    background-color: #BF41FE;
 }
 
 .actions {

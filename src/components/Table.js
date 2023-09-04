@@ -15,7 +15,7 @@ export const Table = ({ rows, deleteRow, editRow }) => {
             <th>Class</th>
             <th>Email</th>
             <th>Phone</th>
-            <th>Status</th>
+            <th>Gender</th>
             <th>Actions</th>
           </tr>
         </thead>

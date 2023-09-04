@@ -10,7 +10,7 @@ export const Modal = ({ closeModal, onSubmit, defaultValue }) => {
       class: "SE1732",
       email: "@gmail.com",
       phone: "",
-      status: "Online",
+      status: "Male",
     }
   );
   const [errors, setErrors] = useState("");
@@ -59,7 +59,7 @@ export const Modal = ({ closeModal, onSubmit, defaultValue }) => {
             <input name="page" onChange={handleChange} value={formState.page} />
           </div>
           <div className="form-group">
-            <label htmlFor="description">Username</label>
+            <label htmlFor="description">Student's Name</label>
             <textarea
               name="description"
               onChange={handleChange}
@@ -91,18 +91,17 @@ export const Modal = ({ closeModal, onSubmit, defaultValue }) => {
             />
           </div>                    
           <div className="form-group">
-            <label htmlFor="status">Status</label>
+            <label htmlFor="status">Gender</label>
             <select
               name="status"
               onChange={handleChange}
               value={formState.status}
             >
-              <option value="online">Online</option>
-              <option value="offline">Offline</option>
-              <option value="busy">Busy</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
             </select>
           </div>
-          {errors && <div className="busy">{`Please include: ${errors}`}</div>}
+          {errors && <div className="female">{`Please include: ${errors}`}</div>}
           <button type="submit" className="btn" onClick={handleSubmit}>
             Submit
           </button>

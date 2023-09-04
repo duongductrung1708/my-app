@@ -7,15 +7,26 @@
   background-color: #faf9f6;
 }
 
+h1 {
+  color: #ce6cff;
+  font-size: 35px;
+  font-weight: 500;
+  text-align: center;
+}
+
 .btn {
   margin-top: 1rem;
   border: none;
-  background-color: #1d4ed8;
+  background-color: #CE6CFF;
   color: #fff;
   padding: 0.5rem 1rem;
   border-radius: 10px;
   cursor: pointer;
   box-shadow: 0px 5px 5px #ccc;
+}
+
+.btn:hover {
+  background-color: #bf41fe;
 }
 
 .search-bar {
@@ -33,7 +44,7 @@
 }
 
 .search-button {
-  background-color: #007bff;
+  background-color: #CE6CFF;
   color: white;
   border: none;
   border-radius: 0 4px 4px 0;
@@ -42,5 +53,36 @@
 }
 
 .search-button:hover {
-  background-color: #0056b3;
+  background-color: #bf41fe;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 10px 15px;
+  background-color: #CE6CFF;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  margin: 0 5px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.pagination button:disabled {
+  background-color: #CE6CFF;
+}
+
+.pagination span {
+  font-weight: bold;
+  margin: 0 5px;
+}
+
+.pagination button:hover {
+  background-color: #bf41fe;
 }
