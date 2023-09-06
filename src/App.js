@@ -34,7 +34,7 @@ function App() {
     },
   ]);
 
-    const localStorageKey = "tableData";
+  const localStorageKey = "tableData";
 
   const saveTableDataToLocalStorage = (data) => {
     localStorage.setItem(localStorageKey, JSON.stringify(data));
@@ -88,12 +88,13 @@ function App() {
   };
 
   const handleEditRow = (targetIndex) => {
-    const actualIndex = (currentPage - 1) * itemsPerPage + targetIndex;
+  const actualIndex = (currentPage - 1) * itemsPerPage + targetIndex;
 
-    setRowToEdit(actualIndex);
+  setRowToEdit(actualIndex);
 
-    setModalOpen(true);
-  };
+  // Instead of passing itemsToDisplay, pass the entire 'rows' dataset
+  setModalOpen(true);
+};
 
   const handleSubmit = (newRow) => {
     if (rowToEdit === null) {
@@ -154,13 +155,13 @@ function App() {
       {modalOpen && (
         <Modal
           closeModal={() => {
-            setModalOpen(false);
-            setRowToEdit(null);
-          }}
-          onSubmit={handleSubmit}
-          defaultValue={rowToEdit !== null && itemsToDisplay[rowToEdit]}
-        />
-      )}
+          setModalOpen(false);
+          setRowToEdit(null);
+        }}
+      onSubmit={handleSubmit}
+      defaultValue={rowToEdit !== null && rows[rowToEdit]}
+    />
+  )}
     </div>
   );
 }
