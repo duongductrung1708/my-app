@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 
 import "./App.css";
@@ -9,31 +9,44 @@ function App() {
   const [modalOpen, setModalOpen] = useState(false);
   const [rows, setRows] = useState([
     {
-      page: "1708",
-      description: "John Doe",
+      id: "1708",
+      username: "John Doe",
       class: "SE1732",
       email: "johndoe@gmail.com",
       phone: "0334230359",
       status: "Male",
     },
     {
-      page: "0608",
-      description: "David Smith",
+      id: "0608",
+      username: "David Smith",
       class: "SE1732",
       email: "davidsmith@gmail.com",
       phone: "0283728465",     
       status: "Male",
     },
     {
-      page: "2404",
-      description: "Jane Doe",
+      id: "2404",
+      username: "Jane Doe",
       class: "SE1732",
       email: "janedoe@gmail.com",
       phone: "0562538664",      
       status: "Female",
     },
   ]);
-  
+
+    const localStorageKey = "tableData";
+
+  const saveTableDataToLocalStorage = (data) => {
+    localStorage.setItem(localStorageKey, JSON.stringify(data));
+  };
+
+  const loadTableDataFromLocalStorage = () => {
+    const storedData = localStorage.getItem(localStorageKey);
+    if (storedData) {
+      setRows(JSON.parse(storedData));
+    }
+  };
+
   const [rowToEdit, setRowToEdit] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -59,53 +72,70 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    loadTableDataFromLocalStorage();
+  }, []);
+
   const handleDeleteRow = (targetIndex) => {
-    setRows(rows.filter((_, idx) => idx !== targetIndex));
+    const actualIndex = (currentPage - 1) * itemsPerPage + targetIndex;
+
+    const updatedRows = [...rows];
+
+    updatedRows.splice(actualIndex, 1);
+
+    setRows(updatedRows);
+    saveTableDataToLocalStorage(updatedRows);
   };
 
-  const handleEditRow = (idx) => {
-    setRowToEdit(idx);
+  const handleEditRow = (targetIndex) => {
+    const actualIndex = (currentPage - 1) * itemsPerPage + targetIndex;
+
+    setRowToEdit(actualIndex);
 
     setModalOpen(true);
   };
 
   const handleSubmit = (newRow) => {
-    rowToEdit === null
-      ? setRows([...rows, newRow])
-      : setRows(
-          rows.map((currRow, idx) => {
-            if (idx !== rowToEdit) return currRow;
+    if (rowToEdit === null) {
+      setRows([...rows, newRow]);
+    } else {
+      const editedRowIndex = (currentPage - 1) * itemsPerPage + rowToEdit;
 
-            return newRow;
-          })
-        );
+      const updatedRows = [...rows];
+      updatedRows[editedRowIndex] = newRow;
+
+      setRows(updatedRows);
+    }
+
+    saveTableDataToLocalStorage(rows);
   };
 
   return (
     <div className="App">
-    <h1>Students List</h1>
+      <h1>Students List</h1>
       <div className="search-bar">
-      <input className="search-input"
-      type="text"
-      placeholder="Search..."
-      value={searchQuery}
-      onChange={(e) => setSearchQuery(e.target.value)}
-      />
-      <button className="search-button">Search</button>
+        <input
+          className="search-input"
+          type="text"
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button className="search-button">Search</button>
       </div>
 
-<Table
-  rows={itemsToDisplay.filter((row) =>
-    row.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    row.page.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    row.class.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    row.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    row.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    row.status.toLowerCase().includes(searchQuery.toLowerCase())
-  )}
-  deleteRow={handleDeleteRow}
-  editRow={handleEditRow}
-/>
+      <Table
+        rows={itemsToDisplay.filter((row) =>
+          row.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row.class.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          row.status.toLowerCase().includes(searchQuery.toLowerCase())
+        )}
+        deleteRow={handleDeleteRow}
+        editRow={handleEditRow}
+      />
 
       <div className="pagination">
         <button onClick={handlePrevPage} disabled={currentPage === 1}>
@@ -117,7 +147,7 @@ function App() {
         <button onClick={handleNextPage} disabled={currentPage === totalPages}>
           Next
         </button>
-      </div>      
+      </div>
       <button onClick={() => setModalOpen(true)} className="btn">
         Create Student
       </button>
@@ -128,7 +158,7 @@ function App() {
             setRowToEdit(null);
           }}
           onSubmit={handleSubmit}
-          defaultValue={rowToEdit !== null && rows[rowToEdit]}
+          defaultValue={rowToEdit !== null && itemsToDisplay[rowToEdit]}
         />
       )}
     </div>

@@ -26,8 +26,8 @@ export const Table = ({ rows, deleteRow, editRow }) => {
 
             return (
               <tr key={idx}>
-                <td>{row.page}</td>
-                <td className="expand">{row.description}</td>
+                <td>{row.id}</td>
+                <td className="expand">{row.username}</td>
                 <td>{row.class}</td>
                 <td>{row.email}</td>
                 <td>{row.phone}</td>
@@ -52,7 +52,7 @@ export const Table = ({ rows, deleteRow, editRow }) => {
             );
           })}
         </tbody>
-      </table>
+      </table>   
     </div>
   );
 };

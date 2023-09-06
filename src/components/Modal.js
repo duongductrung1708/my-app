@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-
+import React, { useState, useEffect } from "react";
 import "./Modal.css";
 
 export const Modal = ({ closeModal, onSubmit, defaultValue }) => {
   const [formState, setFormState] = useState(
     defaultValue || {
-      page: "",
-      description: "",
+      id: "",
+      username: "",
       class: "SE1732",
       email: "@gmail.com",
       phone: "",
@@ -16,7 +15,14 @@ export const Modal = ({ closeModal, onSubmit, defaultValue }) => {
   const [errors, setErrors] = useState("");
 
   const validateForm = () => {
-    if (formState.page && formState.description && formState.class && formState.email && formState.phone && formState.status) {
+    if (
+      formState.id &&
+      formState.username &&
+      formState.class &&
+      formState.email &&
+      formState.phone &&
+      formState.status
+    ) {
       setErrors("");
       return true;
     } else {
@@ -35,7 +41,7 @@ export const Modal = ({ closeModal, onSubmit, defaultValue }) => {
     setFormState({ ...formState, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+    const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!validateForm()) return;
@@ -55,28 +61,28 @@ export const Modal = ({ closeModal, onSubmit, defaultValue }) => {
       <div className="modal">
         <form>
           <div className="form-group">
-            <label htmlFor="page">ID</label>
-            <input name="page" onChange={handleChange} value={formState.page} />
+            <label htmlFor="id">ID</label>
+            <input name="id" onChange={handleChange} value={formState.id} />
           </div>
           <div className="form-group">
-            <label htmlFor="description">Student's Name</label>
-            <textarea
-              name="description"
+            <label htmlFor="username">Student's Name</label>
+            <input
+              name="username"
               onChange={handleChange}
-              value={formState.description}
+              value={formState.username}
             />
           </div>
           <div className="form-group">
             <label htmlFor="class">Class</label>
-            <textarea
+            <input
               name="class"
               onChange={handleChange}
               value={formState.class}
             />
-          </div>          
+          </div>
           <div className="form-group">
             <label htmlFor="email">Email</label>
-            <textarea
+            <input
               name="email"
               onChange={handleChange}
               value={formState.email}
@@ -84,12 +90,12 @@ export const Modal = ({ closeModal, onSubmit, defaultValue }) => {
           </div>
           <div className="form-group">
             <label htmlFor="phone">Phone</label>
-            <textarea
+            <input
               name="phone"
               onChange={handleChange}
               value={formState.phone}
             />
-          </div>                    
+          </div>
           <div className="form-group">
             <label htmlFor="status">Gender</label>
             <select
@@ -97,11 +103,13 @@ export const Modal = ({ closeModal, onSubmit, defaultValue }) => {
               onChange={handleChange}
               value={formState.status}
             >
-              <option value="male">Male</option>
-              <option value="female">Female</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
             </select>
           </div>
-          {errors && <div className="female">{`Please include: ${errors}`}</div>}
+          {errors && (
+            <div className="error">{`Please include: ${errors}`}</div>
+          )}
           <button type="submit" className="btn" onClick={handleSubmit}>
             Submit
           </button>
