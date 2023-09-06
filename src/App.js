@@ -97,19 +97,19 @@ function App() {
 };
 
   const handleSubmit = (newRow) => {
-    if (rowToEdit === null) {
-      setRows([...rows, newRow]);
-    } else {
-      const editedRowIndex = (currentPage - 1) * itemsPerPage + rowToEdit;
+  let updatedRows;
 
-      const updatedRows = [...rows];
-      updatedRows[editedRowIndex] = newRow;
+  if (rowToEdit === null) {
+    updatedRows = [...rows, newRow];
+  } else {
+    const editedRowIndex = (currentPage - 1) * itemsPerPage + rowToEdit;
+    updatedRows = [...rows];
+    updatedRows[editedRowIndex] = newRow;
+  }
 
-      setRows(updatedRows);
-    }
-
-    saveTableDataToLocalStorage(rows);
-  };
+  setRows(updatedRows);
+  saveTableDataToLocalStorage(updatedRows);
+};
 
   return (
     <div className="App">
