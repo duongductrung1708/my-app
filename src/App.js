@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
-import React from "react";
-
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Table } from "./components/Table";
 import { Modal } from "./components/Modal";
@@ -19,22 +17,46 @@ function App() {
     {
       id: "0608",
       username: "David Smith",
-      class: "SE1732",
+      class: "SE1733",
       email: "davidsmith@gmail.com",
-      phone: "0283728465",     
+      phone: "0283728465",
       status: "Male",
     },
     {
       id: "2404",
       username: "Jane Doe",
-      class: "SE1732",
+      class: "SE1734",
       email: "janedoe@gmail.com",
-      phone: "0562538664",      
+      phone: "0562538664",
       status: "Female",
     },
+    {
+      id: "1202",
+      username: "Jenny Huynh",
+      class: "SE1735",
+      email: "jennyhuynh@gmail.com",
+      phone: "0128726382",
+      status: "Female",
+    },
+    {
+      id: "2512",
+      username: "Ariana Grande",
+      class: "SE1736",
+      email: "arianagrande@gmail.com",
+      phone: "0338496354",
+      status: "Female",
+    },
+    {
+      id: "0507",
+      username: "Jack Sparrow",
+      class: "SE1735",
+      email: "jacksparrow@gmail.com",
+      phone: "0985313008",
+      status: "Male",
+    },        
   ]);
 
-  const localStorageKey = "tableData";
+    const localStorageKey = "tableData";
 
   const saveTableDataToLocalStorage = (data) => {
     localStorage.setItem(localStorageKey, JSON.stringify(data));
@@ -56,9 +78,6 @@ function App() {
   const totalPages = Math.ceil(rows.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-
-  const itemsToDisplay = rows.slice(startIndex, endIndex);
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
@@ -77,7 +96,8 @@ function App() {
   }, []);
 
   const handleDeleteRow = (targetIndex) => {
-    const actualIndex = (currentPage - 1) * itemsPerPage + targetIndex;
+    // Calculate the actual index in the entire dataset, not just the current page
+    const actualIndex = startIndex + targetIndex;
 
     const updatedRows = [...rows];
 
@@ -88,28 +108,41 @@ function App() {
   };
 
   const handleEditRow = (targetIndex) => {
-  const actualIndex = (currentPage - 1) * itemsPerPage + targetIndex;
+    // Calculate the actual index in the entire dataset, not just the current page
+    const actualIndex = startIndex + targetIndex;
 
-  setRowToEdit(actualIndex);
+    setRowToEdit(actualIndex);
 
-  // Instead of passing itemsToDisplay, pass the entire 'rows' dataset
-  setModalOpen(true);
-};
+    setModalOpen(true);
+  };
 
   const handleSubmit = (newRow) => {
-  let updatedRows;
+    let updatedRows;
 
-  if (rowToEdit === null) {
-    updatedRows = [...rows, newRow];
-  } else {
-    const editedRowIndex = (currentPage - 1) * itemsPerPage + rowToEdit;
-    updatedRows = [...rows];
-    updatedRows[editedRowIndex] = newRow;
-  }
+    if (rowToEdit === null) {
+      updatedRows = [...rows, newRow];
+    } else {
+      const editedRowIndex = rowToEdit;
+      updatedRows = [...rows];
+      updatedRows[editedRowIndex] = newRow;
+    }
 
-  setRows(updatedRows);
-  saveTableDataToLocalStorage(updatedRows);
-};
+    setRows(updatedRows);
+    saveTableDataToLocalStorage(updatedRows);
+    setModalOpen(false);
+    setRowToEdit(null);
+  };
+
+  const itemsToDisplay = rows
+    .filter((row) =>
+      row.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.class.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.status.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .slice(startIndex, startIndex + itemsPerPage);
 
   return (
     <div className="App">
@@ -126,14 +159,7 @@ function App() {
       </div>
 
       <Table
-        rows={itemsToDisplay.filter((row) =>
-          row.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row.class.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          row.status.toLowerCase().includes(searchQuery.toLowerCase())
-        )}
+        rows={itemsToDisplay}
         deleteRow={handleDeleteRow}
         editRow={handleEditRow}
       />
@@ -155,13 +181,13 @@ function App() {
       {modalOpen && (
         <Modal
           closeModal={() => {
-          setModalOpen(false);
-          setRowToEdit(null);
-        }}
-      onSubmit={handleSubmit}
-      defaultValue={rowToEdit !== null && rows[rowToEdit]}
-    />
-  )}
+            setModalOpen(false);
+            setRowToEdit(null);
+          }}
+          onSubmit={handleSubmit}
+          defaultValue={rowToEdit !== null ? rows[rowToEdit] : null}
+        />
+      )}
     </div>
   );
 }
