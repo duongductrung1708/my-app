@@ -200,7 +200,7 @@ function App() {
     }}
     onSubmit={handleSubmit}
     defaultValue={rowToEdit !== null ? rows[rowToEdit] : null}
-    rows={rows} // Pass the rows data as a prop
+    rows={rows}
   />
 )}
 
