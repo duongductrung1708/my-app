@@ -31,6 +31,12 @@ export const Modal = ({ closeModal, onSubmit, defaultValue, rows }) => {
         setErrors("ID must be unique.");
         return false;
       }
+    } else if (defaultValue !== null) {
+      const isIdUnique = !rows.some((row) => row.id === formState.id && row.id !== defaultValue.id);
+      if (!isIdUnique) {
+        setErrors("ID must be unique.");
+        return false;
+      }
     }
     setErrors("");
     return true;
@@ -45,7 +51,6 @@ export const Modal = ({ closeModal, onSubmit, defaultValue, rows }) => {
     return false;
   }
 };
-
 
   const handleChange = (e) => {
     setFormState({ ...formState, [e.target.name]: e.target.value });
