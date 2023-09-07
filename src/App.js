@@ -56,7 +56,7 @@ function App() {
     },        
   ]);
 
-    const localStorageKey = "tableData";
+  const localStorageKey = "tableData";
 
   const saveTableDataToLocalStorage = (data) => {
     localStorage.setItem(localStorageKey, JSON.stringify(data));
@@ -78,6 +78,18 @@ function App() {
   const totalPages = Math.ceil(rows.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  const itemsToDisplay = rows
+    .filter((row) =>
+      row.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.class.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.status.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .slice(startIndex, endIndex);
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
@@ -96,8 +108,7 @@ function App() {
   }, []);
 
   const handleDeleteRow = (targetIndex) => {
-    // Calculate the actual index in the entire dataset, not just the current page
-    const actualIndex = startIndex + targetIndex;
+    const actualIndex = (currentPage - 1) * itemsPerPage + targetIndex;
 
     const updatedRows = [...rows];
 
@@ -108,8 +119,7 @@ function App() {
   };
 
   const handleEditRow = (targetIndex) => {
-    // Calculate the actual index in the entire dataset, not just the current page
-    const actualIndex = startIndex + targetIndex;
+    const actualIndex = (currentPage - 1) * itemsPerPage + targetIndex;
 
     setRowToEdit(actualIndex);
 
@@ -122,27 +132,20 @@ function App() {
     if (rowToEdit === null) {
       updatedRows = [...rows, newRow];
     } else {
-      const editedRowIndex = rowToEdit;
-      updatedRows = [...rows];
-      updatedRows[editedRowIndex] = newRow;
+      if (rowToEdit !== null) {
+        const editedRowIndex = rowToEdit;
+        updatedRows = [...rows];
+        updatedRows[editedRowIndex] = newRow;
+      } else {
+        updatedRows = [...rows];
+      }
     }
 
     setRows(updatedRows);
     saveTableDataToLocalStorage(updatedRows);
-    setModalOpen(false);
+
     setRowToEdit(null);
   };
-
-  const itemsToDisplay = rows
-    .filter((row) =>
-      row.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.class.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.status.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .slice(startIndex, startIndex + itemsPerPage);
 
   return (
     <div className="App">
