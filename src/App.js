@@ -75,34 +75,6 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  const totalPages = Math.ceil(rows.length / itemsPerPage);
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-
-  const itemsToDisplay = rows
-    .filter((row) =>
-      row.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.class.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.status.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .slice(startIndex, endIndex);
-
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
   useEffect(() => {
     loadTableDataFromLocalStorage();
   }, []);
@@ -145,6 +117,45 @@ function App() {
     saveTableDataToLocalStorage(updatedRows);
 
     setRowToEdit(null);
+  };  
+
+    const handleSearch = (query) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+  };
+
+  const getFilteredAndPaginatedData = () => {
+    const filteredRows = rows.filter((row) =>
+      row.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.class.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.status.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const totalPages = Math.ceil(filteredRows.length / itemsPerPage);
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    const itemsToDisplay = filteredRows.slice(startIndex, endIndex);
+
+    return { itemsToDisplay, totalPages };
+  };
+
+  const { itemsToDisplay, totalPages } = getFilteredAndPaginatedData();
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   return (
@@ -156,7 +167,7 @@ function App() {
           type="text"
           placeholder="Search..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => handleSearch(e.target.value)}
         />
         <button className="search-button">Search</button>
       </div>
