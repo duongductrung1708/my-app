@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Modal.css";
 
-export const Modal = ({ closeModal, onSubmit, defaultValue }) => {
+export const Modal = ({ closeModal, onSubmit, defaultValue, rows }) => {
   const [formState, setFormState] = useState(
     defaultValue || {
       id: "",
@@ -15,33 +15,43 @@ export const Modal = ({ closeModal, onSubmit, defaultValue }) => {
   const [errors, setErrors] = useState("");
 
   const validateForm = () => {
-    if (
-      formState.id &&
-      formState.username &&
-      formState.class &&
-      formState.email &&
-      formState.phone &&
-      formState.status
-    ) {
-      setErrors("");
-      return true;
-    } else {
-      let errorFields = [];
-      for (const [key, value] of Object.entries(formState)) {
-        if (!value) {
-          errorFields.push(key);
-        }
-      }
-      setErrors(errorFields.join(", "));
+  if (
+    formState.username &&
+    formState.class &&
+    formState.email &&
+    formState.phone &&
+    formState.status
+  ) {
+    if (defaultValue === null && !formState.id) {
+      setErrors("ID is required.");
       return false;
+    } else if (defaultValue === null) {
+      const isIdUnique = !rows.some((row) => row.id === formState.id);
+      if (!isIdUnique) {
+        setErrors("ID must be unique.");
+        return false;
+      }
     }
-  };
+    setErrors("");
+    return true;
+  } else {
+    let errorFields = [];
+    for (const [key, value] of Object.entries(formState)) {
+      if (!value) {
+        errorFields.push(key);
+      }
+    }
+    setErrors(errorFields.join(", "));
+    return false;
+  }
+};
+
 
   const handleChange = (e) => {
     setFormState({ ...formState, [e.target.name]: e.target.value });
   };
 
-    const handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!validateForm()) return;
